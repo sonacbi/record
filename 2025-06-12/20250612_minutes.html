@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2025년 6월 12일 회의록</title>
+  <style>
+      html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+    /* 전체 컨테이너를 그리드로 구성, 4열 균등 분할 */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 100vh 100vh 100vh; /* 3페이지 분할 */
+      min-width: 784px; /* A4 기준 */
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .item {
+      padding: 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 헤더 영역: 작성일, 작성자를 4열로 배치 */
+    .header {
+      grid-column: 1 / 5; /* 전체 4열 차지 */
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      background-color: #e6f2ff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .header label {
+      font-weight: bold;
+    }
+
+    .header span {
+      padding-left: 8px;
+    }
+
+    /* 주제 영역 */
+    .subject {
+      grid-column: 1 / 5;
+      background-color: #f0f8ff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+    .subject span {
+      font-weight: normal;
+      flex-grow: 1;
+    }
+
+    /* 참여자 영역 */
+    .participants {
+      background-color: #f0f8ff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+    }
+
+    .participants label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+      margin-right :10px;
+    }
+
+    .participants ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .participants ul li {
+      background-color: #dcefff;
+      padding: 0px 12px;
+      border-radius: 4px;
+      font-weight: normal;
+    }
+
+    /* 회의 내용 영역 - 높이 넉넉히 확보 */
+      .meeting-content {
+      flex: 1;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meeting-content label {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    /* 업무 체크리스트 */
+    .checklist {
+      flex: 1;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .checklist label {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .checklist ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+
+    /* 증빙서류 영역 */
+    .evidence {
+      flex: 1;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      
+      display: flex;
+      flex-direction: column;
+      height: 100vh; 
+      gap: 10px;
+    }
+
+    .evidence label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    /* 남은 높이를 모두 차지 */
+    .evidence-container {
+      display: flex;
+      flex : 1;
+      flex-direction: column;
+      gap: 20px;
+      height: 100%;
+      width: 100vw;
+    }
+
+    .evidence-container-vertical {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .evidence-container-horizontal {
+      
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .evidence-container-vertical img,
+    .evidence-container-horizontal img {
+      width: 100%;
+      object-fit: contain;
+    }
+  </style>
+  <script>
+    function distributeImages() {
+    const containerV = document.querySelector('.evidence-container-vertical');
+    const containerH = document.querySelector('.evidence-container-horizontal');
+    const allImages = Array.from(document.querySelectorAll('.evidence-container img'));
+
+    if (!containerV || !containerH) return;
+
+    containerV.innerHTML = '';
+    containerH.innerHTML = '';
+
+    allImages.forEach(img => {
+      if (img.naturalHeight > img.naturalWidth) {
+        // 세로 긴 이미지
+        containerV.appendChild(img);
+      } else {
+        // 가로 긴 이미지
+        containerH.appendChild(img);
+      }
+    });
+
+    adjustVerticalImages(containerV);
+    adjustHorizontalImages(containerH);
+  }
+
+  function adjustVerticalImages(container) {
+    const gap = 10;
+    const cols = 3;
+    const images = container.querySelectorAll('img');
+    const rows = Math.ceil(images.length / cols);
+    const maxHeight = 600; // CSS max-height 값과 동일하게 맞춰야 함
+
+    // 이미지 높이 = (컨테이너 최대 높이 - (gap * (행-1))) / 행 수
+    const imgHeight = (maxHeight - gap * (rows - 1)) / rows;
+
+    images.forEach(img => {
+      img.style.height = imgHeight + 'px';
+      img.style.width = 'auto';
+    });
+  }
+
+  function adjustHorizontalImages(container) {
+    // 가로 긴 이미지는 한 줄로 쭉 배치 (가로 스크롤 가능하게 하거나 적당히 감싸기)
+    container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
+    container.style.gap = '10px';
+
+    const images = container.querySelectorAll('img');
+    images.forEach(img => {
+      img.style.height = '150px'; // 고정 높이 (원하는 크기로 조절)
+      img.style.width = 'auto';
+    });
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(distributeImages, 100);
+  });
+  window.addEventListener('resize', distributeImages);
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="item">
+      <div class="header">
+        <label>작성일</label><span>2025-06-12</span>
+        <label>작성자</label><span>정다정</span>
+      </div>
+
+      <div class="subject">
+        <label>주제</label>
+        <span>git 형상관리를 이용한 프로젝트 관리 세미나 및 팀빌딩 발대식</span>
+      </div>
+
+      <div class="participants">
+        <label>참여자</label>
+        <ul>
+          <li>정다정</li>
+          <li>장승혁</li>
+          <li>노은성</li>
+          <li>박효원</li>
+        </ul>
+      </div>
+
+      <div class="meeting-content">
+        <label>회의 내용</label>
+        <div><!-- 회의 내용이 들어갑니다 -->
+          2025년 06월 12일 라마다플라자 광주호텔, 5F 대연회장(광주 서구 상무자유로 149)에서 팀빌딩 역량강화 및 네트워크, 비용처리 안내를 위한 세미나와 팀빌딩 발대식이 개최되었습니다.
+          <br><br>현 시점 셜LOCK에 활동 중인 모든 팀원이 참가하였으며, GIT을 이용한 형상관리*와 비용처리 방법을 교육받았습니다.
+
+          <br><br>오늘 세미나 내용을 바탕으로
+          형상관리 및 비용처리에 대한 이해도를 높이고, 실제 프로젝트에 적극적으로 적용할 계획입니다.
+
+          <br><br>특히 GIT을 활용한 형상관리 교육은 팀 내 협업 시 버전 충돌을 방지하고, 작업 이력을 체계적으로 관리하는 데 큰 도움이 될 것으로 기대됩니다. 각 팀원이 실습을 통해 직접 commit, branch, merge 등의 과정을 경험함으로써, 앞으로의 개발 업무에서 효율성과 일관성을 높일 수 있을 것입니다.
+
+          <br><br>또한, 비용처리 절차에 대한 안내를 통해 프로젝트 진행 중 발생하는 비용을 정확하게 기록하고 관리하는 방법을 숙지하였습니다. 실제 운영 단계에서 예산 집행 전 우선적으로 팀빌딩 담당자와 검토하는 작업을 선행하도록 합시다.
+
+          <br><br>이번 팀빌딩 발대식을 계기로 팀원 간의 유대감도 한층 강화되었으며, 향후 협업 과정에서도 오늘 배운 내용을 기반으로 보다 책임감 있게 임할 수 있을 것으로 기대됩니다.
+
+          <br><br><br>*형상관리 : 소프트웨어의 변경사항을 체계적으로 추적하고 통제하는 것
+        </div>
+      </div>
+    </div>
+    
+    <div class="item">
+      <div class="checklist">
+        <label>업무 체크리스트</label>
+        <ul>
+          <li class="checklist-item"><input type="checkbox" /> Git 사용 방법에 대해 점검 필요 (gitLab 위주 설명이지만 Local 명령어 중심으로 확인 가능)</li>
+          <li class="checklist-item"><input type="checkbox" /> GitHub 미사용자를 대상으로 1차 교육 실시 예정</li>
+          <li class="checklist-item"><input type="checkbox" /> 역량 강화 세미나 관련 PPT 메일공유가 시행됐는지 수시로 확인</li>
+          <li class="checklist-item"><input type="checkbox" /> 지출 증빙용 영수증 반드시 첨부</li>
+          <li class="checklist-item"><input type="checkbox" /> 동일날짜 AI랩실 회의록 작성하기</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="item">
+      <div class="evidence">
+
+        <label>증빙서류</label>
+
+        <div class="evidence-container">
+          <!-- 이미지 추가하기 -->
+          <!-- 세로 긴 이미지만 -->
+          <div class="evidence-container-vertical">
+            <img src="image/image01.png" alt="증빙 이미지 1" />
+            <img src="image/image02.png" alt="증빙 이미지 2" />
+            <img src="image/image05.png" alt="증빙 이미지 5" />
+            <img src="image/image06.png" alt="증빙 이미지 6" />
+            <img src="image/receipt.jpg" alt="영수증 이미지" />
+          </div>
+          
+          <!-- 가로 긴 이미지만 -->
+          <div class="evidence-container-horizontal">
+            <img src="image/image03.png" alt="증빙 이미지 3" />
+            <img src="image/image04.png" alt="증빙 이미지 4" />
+          </div> 
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>
