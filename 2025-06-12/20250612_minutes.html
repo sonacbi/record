@@ -10,6 +10,26 @@
       padding: 0;
       height: 100vh;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+    }
+
     /* 전체 컨테이너를 그리드로 구성, 4열 균등 분할 */
     .container {
       display: grid;
@@ -194,65 +214,6 @@
       object-fit: contain;
     }
   </style>
-  <script>
-    function distributeImages() {
-    const containerV = document.querySelector('.evidence-container-vertical');
-    const containerH = document.querySelector('.evidence-container-horizontal');
-    const allImages = Array.from(document.querySelectorAll('.evidence-container img'));
-
-    if (!containerV || !containerH) return;
-
-    containerV.innerHTML = '';
-    containerH.innerHTML = '';
-
-    allImages.forEach(img => {
-      if (img.naturalHeight > img.naturalWidth) {
-        // 세로 긴 이미지
-        containerV.appendChild(img);
-      } else {
-        // 가로 긴 이미지
-        containerH.appendChild(img);
-      }
-    });
-
-    adjustVerticalImages(containerV);
-    adjustHorizontalImages(containerH);
-  }
-
-  function adjustVerticalImages(container) {
-    const gap = 10;
-    const cols = 3;
-    const images = container.querySelectorAll('img');
-    const rows = Math.ceil(images.length / cols);
-    const maxHeight = 600; // CSS max-height 값과 동일하게 맞춰야 함
-
-    // 이미지 높이 = (컨테이너 최대 높이 - (gap * (행-1))) / 행 수
-    const imgHeight = (maxHeight - gap * (rows - 1)) / rows;
-
-    images.forEach(img => {
-      img.style.height = imgHeight + 'px';
-      img.style.width = 'auto';
-    });
-  }
-
-  function adjustHorizontalImages(container) {
-    // 가로 긴 이미지는 한 줄로 쭉 배치 (가로 스크롤 가능하게 하거나 적당히 감싸기)
-    container.style.display = 'flex';
-    container.style.flexWrap = 'wrap';
-    container.style.gap = '10px';
-
-    const images = container.querySelectorAll('img');
-    images.forEach(img => {
-      img.style.height = '150px'; // 고정 높이 (원하는 크기로 조절)
-      img.style.width = 'auto';
-    });
-  }
-
-  window.addEventListener('load', () => {
-    setTimeout(distributeImages, 100);
-  });
-  window.addEventListener('resize', distributeImages);
-  </script>
 </head>
 <body>
   <div class="container">
@@ -337,5 +298,84 @@
     </div>
     
   </div>
+
+  <div id="imageModal" class="modal">
+    <img id="modalImage" src="" alt="확대 이미지" />
+  </div>
 </body>
+  <script>
+      function distributeImages() {
+      const containerV = document.querySelector('.evidence-container-vertical');
+      const containerH = document.querySelector('.evidence-container-horizontal');
+      const allImages = Array.from(document.querySelectorAll('.evidence-container img'));
+
+      if (!containerV || !containerH) return;
+
+      containerV.innerHTML = '';
+      containerH.innerHTML = '';
+
+      allImages.forEach(img => {
+        if (img.naturalHeight > img.naturalWidth) {
+          // 세로 긴 이미지
+          containerV.appendChild(img);
+        } else {
+          // 가로 긴 이미지
+          containerH.appendChild(img);
+        }
+      });
+
+      adjustVerticalImages(containerV);
+      adjustHorizontalImages(containerH);
+    }
+
+    function adjustVerticalImages(container) {
+      const gap = 10;
+      const cols = 3;
+      const images = container.querySelectorAll('img');
+      const rows = Math.ceil(images.length / cols);
+      const maxHeight = 600; // CSS max-height 값과 동일하게 맞춰야 함
+
+      // 이미지 높이 = (컨테이너 최대 높이 - (gap * (행-1))) / 행 수
+      const imgHeight = (maxHeight - gap * (rows - 1)) / rows;
+
+      images.forEach(img => {
+        img.style.height = imgHeight + 'px';
+        img.style.width = 'auto';
+      });
+    }
+
+    function adjustHorizontalImages(container) {
+      // 가로 긴 이미지는 한 줄로 쭉 배치 (가로 스크롤 가능하게 하거나 적당히 감싸기)
+      container.style.display = 'flex';
+      container.style.flexWrap = 'wrap';
+      container.style.gap = '10px';
+
+      const images = container.querySelectorAll('img');
+      images.forEach(img => {
+        img.style.height = '150px'; // 고정 높이 (원하는 크기로 조절)
+        img.style.width = 'auto';
+      });
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(distributeImages, 100);
+    });
+    window.addEventListener('resize', distributeImages);
+
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+
+    document.querySelectorAll(".evidence-container img").forEach(img => {
+    img.addEventListener("click", () => {
+      modal.style.display = "flex";
+      modalImg.src = img.src;
+    });
+    });
+
+    modal.addEventListener("click", () => {
+    modal.style.display = "none";
+    modalImg.src = "";
+    });
+    
+  </script>
 </html>
